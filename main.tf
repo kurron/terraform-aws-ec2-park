@@ -7,6 +7,9 @@ provider "aws" {
     region     = "${var.region}"
 }
 
+resource "random_pet" "pet" {
+}
+
 data "template_file" "start_lambda" {
     template = "${file("${path.module}/files/start-lambda.py.template")}"
     vars {
@@ -27,7 +30,7 @@ data "archive_file" "start_lambda" {
 
 resource "aws_lambda_function" "start_lambda" {
     filename         = "${path.module}/archives/start-lambda.zip"
-    function_name    = "ec2-scheduled-start"
+    function_name    = "ec2-scheduled-start-${random_pet.pet.id}"
     handler          = "start-lambda.lambda_handler"
     role             = "${var.role_arn}"
     description      = "Turns on EC2 instances that match the specified tag values"
@@ -63,7 +66,7 @@ data "archive_file" "stop_lambda" {
 
 resource "aws_lambda_function" "stop_lambda" {
     filename         = "${path.module}/archives/stop-lambda.zip"
-    function_name    = "ec2-scheduled-stop"
+    function_name    = "ec2-scheduled-stop-${random_pet.pet.id}"
     handler          = "stop-lambda.lambda_handler"
     role             = "${var.role_arn}"
     description      = "Turns off EC2 instances that match the specified tag values"
@@ -80,7 +83,7 @@ resource "aws_lambda_function" "stop_lambda" {
 }
 
 resource "aws_cloudwatch_event_rule" "ec2_start" {
-    name                = "trigger-ec2-start"
+    name                = "trigger-ec2-start-${random_pet.pet.id}"
     schedule_expression = "${var.start_cron_expression}"
     description         = "Triggers the Lambda what will start scheduled EC2 instances"
     is_enabled          = true
@@ -92,7 +95,7 @@ resource "aws_cloudwatch_event_target" "start_lambda" {
 }
 
 resource "aws_cloudwatch_event_rule" "ec2_stop" {
-    name                = "trigger-ec2-stop"
+    name                = "trigger-ec2-stop-${random_pet.pet.id}"
     schedule_expression = "${var.stop_cron_expression}"
     description         = "Triggers the Lambda what will stop scheduled EC2 instances"
     is_enabled          = true

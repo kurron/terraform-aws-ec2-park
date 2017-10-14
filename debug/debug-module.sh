@@ -29,7 +29,7 @@ ${PLAN}
 
 SHOW="terraform show debug/proposed-changes.plan"
 echo ${SHOW}
-#${SHOW}
+${SHOW}
 
 APPLY="terraform apply -refresh=true \
                        -lock=true \
@@ -37,10 +37,10 @@ APPLY="terraform apply -refresh=true \
                        -input=false \
                        debug/proposed-changes.plan"
 echo ${APPLY}
-#${APPLY}
+${APPLY}
 
 DESTROY="terraform destroy -refresh=true \
                            -input=false \
                            debug"
 echo ${DESTROY}
-#${DESTROY}
+${DESTROY}
