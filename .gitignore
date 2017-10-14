@@ -2,3 +2,4 @@
 *.plan
 *.txt
 .terraform/
+archives/

@@ -1,0 +1,36 @@
+import boto3
+
+def lambda_handler(event, context):
+    region = event.get( 'region' )
+    print( 'Region is ' + region )
+
+    ec2 = boto3.client( 'ec2', region_name=region )
+
+    describe = ec2.describe_instances(
+        Filters=[
+            {
+                'Name': 'tag:Project',
+                'Values': ['${project}']
+            },
+            {
+                'Name': 'tag:Environment',
+                'Values': ['${environment}']
+            },
+            {
+                'Name': 'tag:Scheduled',
+                'Values': ['Yes']
+            }
+        ]
+    )
+
+    instancelist = []
+    for reservation in (describe["Reservations"]):
+        for instance in reservation["Instances"]:
+            instancelist.append(instance["InstanceId"])
+    joined = ', '.join( instancelist )
+    print( 'Filtered is ' + joined )
+
+    start = ec2.start_instances(
+        InstanceIds=instancelist,
+        DryRun=False
+    )
