@@ -27,3 +27,13 @@ variable "role_arn" {
     type = "string"
     description = "ARN of the role that has rights to start and stop EC2 instances"
 }
+
+variable "start_cron_expression" {
+    type = "string"
+    description = "Cron expression describing when the instances should be started"
+}
+
+variable "stop_cron_expression" {
+    type = "string"
+    description = "Cron expression describing when the instances should be stopped"
+}
